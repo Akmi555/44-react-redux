@@ -4,17 +4,17 @@ import { JokeCard, RandomJokesWrapper, JokeText, JokesContainer } from "./styles
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { randomJokesSliceActions, randomJokesSliceSelectors } from "../../store/redux/randomJokes/randomJokesSlice";
 import { v4 } from "uuid";
+import Spinner from '../Spinner/Spinner'
 
 function RandomJokes() {
   const dispatch = useAppDispatch()
-  const randomJoke = useAppSelector(randomJokesSliceSelectors.jokeData)
+  const { data, status, error } = useAppSelector(randomJokesSliceSelectors.jokeData)
 
-  console.log(randomJoke)
   const getJoke = () => {
     dispatch(randomJokesSliceActions.getJoke())
   }
 
-  const jokes = randomJoke.data.map((joke: any) => {
+  const jokes = data.map((joke: any) => {
     return <JokeText key={v4()}>{`${joke.setup} - ${joke.punchline}`}</JokeText>
   })
 
@@ -23,7 +23,7 @@ function RandomJokes() {
       <JokeCard>
         <Button name='Get Joke' onClick={getJoke} />
         <JokesContainer>
-          {jokes}
+          {status === 'loading' ? <Spinner /> : jokes}
         </JokesContainer>
       </JokeCard>
     </RandomJokesWrapper>
